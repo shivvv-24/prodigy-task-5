@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="search-box">
+            <input type="text" id="city" placeholder="Enter city name">
+            <button onclick="getWeather()">Search</button>
+        </div>
+        <div id="weather-info" class="hidden">
+            <h2 id="location"></h2>
+            <p id="temperature"></p>
+            <p id="description"></p>
+            <p id="humidity"></p>
+            <p id="wind"></p>
+        </div>
+        <button id="toggle-theme">Toggle Dark Mode</button>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-box input {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-box button {
+            padding: 10px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .dark-mode {
+            background: #333;
+            color: white;
+        }
+    </style>
+
+    <script>
+        const apiKey = 'YOUR_API_KEY';
+        const weatherInfo = document.getElementById('weather-info');
+        const toggleThemeBtn = document.getElementById('toggle-theme');
+
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            if (!city) return alert('Please enter a city name');
+            
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('location').innerText = `${data.name}, ${data.sys.country}`;
+                    document.getElementById('temperature').innerText = `Temperature: ${data.main.temp}°C`;
+                    document.getElementById('description').innerText = `Weather: ${data.weather[0].description}`;
+                    document.getElementById('humidity').innerText = `Humidity: ${data.main.humidity}%`;
+                    document.getElementById('wind').innerText = `Wind Speed: ${data.wind.speed} m/s`;
+                    weatherInfo.classList.remove('hidden');
+                })
+                .catch(() => alert('City not found'));
+        }
+
+        toggleThemeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+</html>
